@@ -1,0 +1,41 @@
+name: RPM Build and Release
+
+
+on: 
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Package version.'
+        required: true
+        default: '8.7'
+      major:
+        description: 'Major version'
+        required: true
+        default: '8.x'
+
+jobs:
+  build:
+    name: Build and Release
+    runs-on: ubuntu-latest
+    container: 'docker://pimsubc/centos7-rpmbuild:latest'
+    permissions: write-all
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Prepare environment
+        run: |
+          mkdir -p ./SOURCES/ && curl https://dl.winehq.org/wine/source/${{ inputs.major }}/wine-${{ inputs.version }}.tar.xz -o ./SOURCES/wine.tar.xz
+          yum groupinstall -y 'Development Tools'
+          yum-builddep -y ./SPECS/wine.spec 
+      - name: Build package
+        run: rpmbuild -ba ./SPECS/wine.spec --define "_topdir `pwd`" --define "version ${{ inputs.version }}" --define "major ${{ inputs.major }}"
+      - name: Release package
+        uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: "latest"
+          prerelease: false
+          title: "${{ inputs.version }}"
+          files: |
+            ./RPMS/x86_64/wine-${{ inputs.version }}-1.x86_64.rpm
+            ./SRPMS/wine-${{ inputs.version }}-1.src.rpm
