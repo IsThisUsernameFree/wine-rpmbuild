@@ -10,19 +10,25 @@ yum groupinstall "Development Tools"
 
 Install wine build prerequisites 
 
-`yum-builddep SPECS/wine.spec`
+```
+yum-builddep SPECS/wine.spec
+```
 
 # Build instructions
 
 ## Get latest Wine archive, eg:
 
-`curl https://dl.winehq.org/wine/source/8.x/wine-8.7.tar.xz -O SOURCES/wine.tar.xz`
+```
+cd  wine-rpmbuild
+mkdir SOURCES
+curl https://dl.winehq.org/wine/source/8.x/wine-8.7.tar.xz -o SOURCES/wine.tar.xz
+```
 
 ## Build the RPM
 
 Build package (base, debug and src)
 
-`rpmbuild -ba ./SPECS/wine.spec`
+`rpmbuild -ba ./SPECS/wine.spec --define "_topdir $(pwd)" --define "version 8.7"`
 
 For other options, please refer to https://linux.die.net/man/8/rpmbuild
 
