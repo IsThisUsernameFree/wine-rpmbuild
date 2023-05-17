@@ -3,6 +3,7 @@
 Install rpm-build and wine build prerequisites 
 
 `yum install rpm-build`
+
 `yum-builddep SPECS/wine.spec`
 
 # Build instructions
