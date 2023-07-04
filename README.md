@@ -29,3 +29,5 @@ rpmbuild -bs ./SPECS/wine.spec --define "_topdir $(pwd)" --define "version 8.7"
 
 For other options, please refer to https://linux.die.net/man/8/rpmbuild
 
+
+C MA BEET
